@@ -12,7 +12,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var jwtSecret = []byte(os.Getenv("SEC_WHEEL_SEC"))
+var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
 type User struct {
 	ID       string
