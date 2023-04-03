@@ -23,7 +23,7 @@ import (
 )
 
 func main() {
-	http.Handle("/graphql", auth.AuthenticateMiddleware(yourGraphQLHandler))
+	http.Handle("/graphql", auth.AuthenticateMiddleware(httpHandler))
 	http.HandleFunc("/register", auth.RegisterHandler)
 	http.HandleFunc("/login", auth.LoginHandler)
 
@@ -32,4 +32,4 @@ func main() {
 }
 ```
 
-Replace `yourGraphQLHandler` with your actual GraphQL handler or any other handler that requires authentication.
+Replace `httpHandler` with your actual GraphQL handler or any other handler that requires authentication.
