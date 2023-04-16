@@ -14,13 +14,11 @@ import (
 
 var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
-type User struct {
-	ID       string
-	Email    string
-	Password string
-}
+var userStore UserStore
 
-var users = make(map[string]*User) // Mock user storage, replace with a real database
+func SetUserStore(store UserStore) {
+	userStore = store
+}
 
 func isEmailValid(email string) bool {
 	regex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
@@ -78,7 +76,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if _, exists := users[user.Email]; exists {
+	if exists, _ := userStore.UserExists(user.Email); exists {
 		http.Error(w, "Email already exists", http.StatusBadRequest)
 		return
 	}
@@ -90,7 +88,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user.Password = string(hashedPassword)
-	users[user.Email] = &user
+	userStore.CreateUser(&user)
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(user)
@@ -108,8 +106,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	storedUser, ok := users[user.Email]
-	if !ok {
+	storedUser, err := userStore.GetUserByEmail(user.Email)
+	if err != nil {
 		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 		return
 	}
