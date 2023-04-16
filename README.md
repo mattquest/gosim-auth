@@ -1,60 +1,61 @@
-# Authentication Module
+# gosim-auth
 
-This authentication module provides basic JWT authentication and user registration for your Go HTTP server.
+A simple authentication package for Go projects, featuring JWT and bcrypt. This package provides user registration, login, and authentication middleware.
 
-## Optional: Creating a new Go project (Go module)
+## Getting Started
 
-If you haven't created a Go project yet, follow these steps:
-
-1. Create a new directory for your project:
+If you haven't created a Go project yet, first create a new directory for your project and initialize it as a Go module by running the following commands:
 
 ```sh
-mkdir yourproject
-cd yourproject
+mkdir myproject
+cd myproject
+go mod init github.com/yourusername/myproject
 ```
 
-Replace `yourproject` with the desired name for your project.
+Replace `yourusername` and `myproject` with appropriate values.
 
-2. Initialize the Go module:
+## Installation
+
+To install the `gosim-auth` package, run the following command in your Go project directory:
 
 ```sh
-go mod init github.com/yourusername/yourproject
+go get github.com/mattquest/gosim-auth
 ```
-
-Replace `yourusername` and `yourproject` with your GitHub username and your project's name.
-
-Now you can start using the `auth` package in your Go project.
 
 ## Usage
 
-1. Import the `auth` package in your `main.go` file:
+In your Go project, import the `gosim-auth` package:
 
 ```go
-import "github.com/mattquest/gosim-auth/auth"
+import "github.com/mattquest/gosim-auth"
 ```
 
-2. Use the provided handlers and middleware in your HTTP server:
+### User Registration
+
+To handle user registration, use the `auth.RegisterHandler` function:
 
 ```go
-package main
-
-import (
-"log"
-"net/http"
-
-    "github.com/mattquest/gosim-auth/auth"
-
-)
-
-func main() {
-http.Handle("/graphql", auth.AuthenticateMiddleware(yourGraphQLHandler))
 http.HandleFunc("/register", auth.RegisterHandler)
-http.HandleFunc("/login", auth.LoginHandler)
-
-    log.Println("Listening on :8080...")
-    log.Fatal(http.ListenAndServe(":8080", nil))
-
-}
 ```
 
-Replace `yourGraphQLHandler` with your actual GraphQL handler or any other handler that requires authentication.
+### User Login
+
+To handle user login, use the `auth.LoginHandler` function:
+
+```go
+http.HandleFunc("/login", auth.LoginHandler)
+```
+
+### Authentication Middleware
+
+To protect your routes with JWT authentication, use the `auth.AuthenticateMiddleware` function:
+
+```go
+http.Handle("/protected", auth.AuthenticateMiddleware(http.HandlerFunc(protectedHandler)))
+```
+
+Replace `protectedHandler` with the actual handler function you want to protect.
+
+## License
+
+This project is licensed under the MIT License.
