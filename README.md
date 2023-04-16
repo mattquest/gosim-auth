@@ -1,61 +1,54 @@
 # gosim-auth
 
-A simple authentication package for Go projects, featuring JWT and bcrypt. This package provides user registration, login, and authentication middleware.
+A simple Go authentication package for user registration, login, and JWT authentication.
 
-## Getting Started
+## Prerequisites
 
-If you haven't created a Go project yet, first create a new directory for your project and initialize it as a Go module by running the following commands:
+1. Install Go: https://golang.org/doc/install
+2. Make sure you have a new or existing Go project and it is a Go module.
 
-```sh
-mkdir myproject
-cd myproject
-go mod init github.com/yourusername/myproject
+## How to use gosim-auth
+
+1. Install the package:
+
+```
+   go get github.com/mattquest/gosim-auth
 ```
 
-Replace `yourusername` and `myproject` with appropriate values.
+2. Import the package in your project:
 
-## Installation
-
-To install the `gosim-auth` package, run the following command in your Go project directory:
-
-```sh
-go get github.com/mattquest/gosim-auth
+```
+   import "github.com/mattquest/gosim-auth"
 ```
 
-## Usage
+3. Define a User Store that implements the auth.UserStore interface:
 
-In your Go project, import the `gosim-auth` package:
+```
+   type YourUserStore struct {
+   }
 
-```go
-import "github.com/mattquest/gosim-auth"
+   func (s *YourUserStore) GetUserByEmail(email string) (*auth.User, error) {
+       // Your implementation here
+   }
+
+   func (s *YourUserStore) CreateUser(user *auth.User) error {
+       // Your implementation here
+   }
 ```
 
-### User Registration
+4. Initialize the User Store and handlers:
 
-To handle user registration, use the `auth.RegisterHandler` function:
-
-```go
-http.HandleFunc("/register", auth.RegisterHandler)
+```
+   userStore := &YourUserStore{}
+   registerHandler := auth.NewRegisterHandler(userStore)
+   loginHandler := auth.NewLoginHandler(userStore)
+   authenticateMiddleware := auth.AuthenticateMiddleware
 ```
 
-### User Login
+5. Use the handlers in your HTTP server:
 
-To handle user login, use the `auth.LoginHandler` function:
-
-```go
-http.HandleFunc("/login", auth.LoginHandler)
 ```
-
-### Authentication Middleware
-
-To protect your routes with JWT authentication, use the `auth.AuthenticateMiddleware` function:
-
-```go
-http.Handle("/protected", auth.AuthenticateMiddleware(http.HandlerFunc(protectedHandler)))
+   http.HandleFunc("/register", registerHandler)
+   http.HandleFunc("/login", loginHandler)
+   http.Handle("/protected", authenticateMiddleware(protectedHandler))
 ```
-
-Replace `protectedHandler` with the actual handler function you want to protect.
-
-## License
-
-This project is licensed under the MIT License.
