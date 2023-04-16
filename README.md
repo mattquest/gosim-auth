@@ -8,18 +8,18 @@ If you haven't created a Go project yet, follow these steps:
 
 1. Create a new directory for your project:
 
-\```sh
+```sh
 mkdir yourproject
 cd yourproject
-\```
+```
 
 Replace `yourproject` with the desired name for your project.
 
 2. Initialize the Go module:
 
-\```sh
+```sh
 go mod init github.com/yourusername/yourproject
-\```
+```
 
 Replace `yourusername` and `yourproject` with your GitHub username and your project's name.
 
@@ -29,13 +29,13 @@ Now you can start using the `auth` package in your Go project.
 
 1. Import the `auth` package in your `main.go` file:
 
-\```go
+```go
 import "github.com/mattquest/gosim-auth/auth"
-\```
+```
 
 2. Use the provided handlers and middleware in your HTTP server:
 
-\```go
+```go
 package main
 
 import (
@@ -55,6 +55,6 @@ http.HandleFunc("/login", auth.LoginHandler)
     log.Fatal(http.ListenAndServe(":8080", nil))
 
 }
-\```
+```
 
 Replace `yourGraphQLHandler` with your actual GraphQL handler or any other handler that requires authentication.
